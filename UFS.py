@@ -51,12 +51,10 @@ def UFS(data, K, d):
         D[i,i] = sum(W[i,:])#diagonal elements at degree matrix
     L = D - W #Calculate the Laplace matrix
     feature_values, vectors = scipy.linalg.eig(L,D)#Find generalized eigenvalues and eigenvectors
-    print(vectors.shape)
     seq = np.argsort(feature_values)#Sort eigenvalues
     seq = seq[1:K+1]#Select the K eigenvalues from the next smallest
     Y = vectors[:,seq]#get feature vector
     Y = np.real(Y)
-    print(Y.shape)
     # Using least angle regression to get the parameters of the balloon section a
     score = np.zeros((1,M))#Record the score for each feature
     model = LassoLarsCV()#train a model
@@ -65,7 +63,6 @@ def UFS(data, K, d):
         model.fit(data.transpose(),Y[:,i])
         a = model.coef_#Get the coefficients of a linear regression model
         score[0,i] = max(a)
-        print(a.shape)
     seq = np.argsort(-score)#Sort the scores from largest to smallest
     seq = seq[0,0:d]#Select the first d largest scores
     data = data.transpose()
